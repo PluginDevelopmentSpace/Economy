@@ -1,0 +1,12 @@
+name: Economy
+version: 1.0
+author: Nathan Fiscaletti
+api-version: 1.18
+main: prison.nf.economy.EconomyPlugin
+
+depend:
+  - Storage
+
+commands:
+  eco:
+    description: Commands related to server economy

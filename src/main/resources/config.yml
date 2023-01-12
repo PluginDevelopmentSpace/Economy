@@ -1,0 +1,37 @@
+MessagePrefix: "[&aEconomy&r] "
+
+Transactions:
+  DefaultWithdrawMemo: "Administrative withdraw"
+  DefaultDepositMemo: "Administrative deposit"
+  DefaultTransferMemo: "General transfer"
+
+CurrencyFormat:
+  Positive: "&a$%value%&r"
+  Zero: "&a$%value%&r"
+  Negative: "&c$%value%&r"
+
+Strings:
+  Messages:
+    TransactionList:
+      NoTransactions: "&eNo Transactions.&r"
+      Header: "Last &a%count%&r transactions for &9%player%&r"
+      Transaction:
+        Detail: "&f - &7&o[%date%] &9%from%&f -> &9%to%&r &f: %value%&r"
+        Memo: "   &fMemo: &f&r&o%memo%&r"
+
+    PlayerBalance: "Account Balance for &9%player%&r: %value%"
+
+    Transfer:
+      Received: "%from% has transferred %value% to &9your account&r."
+      Admin: "&6A server administrator&r has transferred %value% from %from% to %to%."
+      Transferred: "&aTransferred %value% from %from% to %to%.&r"
+      Sent: "Sent %value% to %to%.&r"
+
+  Errors:
+    LoadFailure: "&cFailed to load economy system.&r"
+    InvalidLimit: "&cInvalid limit '%limit%'. Must be a valid number.&r"
+    AccountNotFoundForPlayer: "&cCould not locate an account for player &9%player%&c.&r"
+    AccountsNotFound: "&cCould not locate one or more of the specified accounts.&r"
+    InsufficientAccountBalance: "&cInsufficient account balance.&r"
+    SameAccountTransfer: "&cFunds can only be transferred between differing accounts.&r"
+    TransactionAmountNegative: "&cTransaction amount must be a positive number.&r"
