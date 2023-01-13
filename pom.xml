@@ -6,7 +6,7 @@
 
     <groupId>prison.nf.economy</groupId>
     <artifactId>Economy</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>18</maven.compiler.source>
@@ -32,9 +32,9 @@
         <dependency>
             <groupId>prison.nf.storage</groupId>
             <artifactId>Storage</artifactId>
-            <version>1.0</version>
+            <version>1.1</version>
             <scope>system</scope>
-            <systemPath>${pom.basedir}/lib/Storage-1.0-SNAPSHOT.jar</systemPath>
+            <systemPath>${pom.basedir}/lib/Storage-1.1-SNAPSHOT.jar</systemPath>
         </dependency>
     </dependencies>
 </project>
