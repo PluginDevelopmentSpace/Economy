@@ -7,8 +7,8 @@ import org.bukkit.command.CommandSender;
 import prison.nf.economy.EconomyPlugin;
 import prison.nf.economy.Messages;
 import prison.nf.economy.commands.commandtypes.ServerCommand;
-import prison.nf.storage.data.stores.economy.EconomyDataStore;
-import prison.nf.storage.data.stores.economy.datatypes.Account;
+import prison.nf.economy.Economy;
+import prison.nf.economy.datatypes.Account;
 
 import java.sql.SQLException;
 
@@ -35,7 +35,7 @@ public class BalanceCommand extends ServerCommand
             return;
         }
 
-        EconomyDataStore economy = EconomyDataStore.getInstance();
+        Economy economy = Economy.getInstance();
         if (economy == null) {
             Messages.Errors.LoadFailure().sendTo(sender);
             Messages.Errors.Server.DataStoreNotLoaded().sendToServer();

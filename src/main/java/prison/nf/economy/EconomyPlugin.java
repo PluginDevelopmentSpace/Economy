@@ -3,6 +3,7 @@ package prison.nf.economy;
 import org.bukkit.plugin.java.JavaPlugin;
 import prison.nf.economy.events.PlayerEvents;
 
+import java.io.File;
 import java.util.List;
 
 public class EconomyPlugin extends JavaPlugin
@@ -13,6 +14,14 @@ public class EconomyPlugin extends JavaPlugin
         // Initialize Config
         getConfig().options().copyDefaults(true);
         saveConfig();
+
+        // Register Economy Datastore
+        try {
+            Economy.initialize(getDataFolder().getAbsolutePath() + File.separator + "database.sqlite");
+            getLogger().info("Initialized Economy DataStore.");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         // Register Strings
         Messages.initialize(this);

@@ -1,16 +1,16 @@
 package prison.nf.economy.commands.player;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+
 import prison.nf.economy.EconomyPlugin;
 import prison.nf.economy.Messages;
 import prison.nf.economy.commands.commandtypes.PlayerCommand;
-import prison.nf.storage.data.exceptions.AccountNotFoundException;
-import prison.nf.storage.data.stores.economy.EconomyDataStore;
-import prison.nf.storage.data.stores.economy.datatypes.Account;
-import prison.nf.storage.data.stores.economy.datatypes.Transaction;
+import prison.nf.economy.exceptions.AccountNotFoundException;
+import prison.nf.economy.Economy;
+import prison.nf.economy.datatypes.Account;
+import prison.nf.economy.datatypes.Transaction;
 
 import javax.annotation.Nullable;
 import java.sql.SQLException;
@@ -39,7 +39,8 @@ public class AccountCommand extends PlayerCommand
             }
         }
 
-        EconomyDataStore economy = EconomyDataStore.getInstance();
+
+        Economy economy = Economy.getInstance();
         if (economy == null) {
             Messages.Errors.LoadFailure().sendTo(player);
             Messages.Errors.Server.DataStoreNotLoaded().sendToServer();

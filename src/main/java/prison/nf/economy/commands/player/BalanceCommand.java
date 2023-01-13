@@ -1,12 +1,11 @@
 package prison.nf.economy.commands.player;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import prison.nf.economy.EconomyPlugin;
 import prison.nf.economy.Messages;
 import prison.nf.economy.commands.commandtypes.PlayerCommand;
-import prison.nf.storage.data.stores.economy.EconomyDataStore;
-import prison.nf.storage.data.stores.economy.datatypes.Account;
+import prison.nf.economy.Economy;
+import prison.nf.economy.datatypes.Account;
 
 import java.sql.SQLException;
 
@@ -21,7 +20,7 @@ public class BalanceCommand extends PlayerCommand
     public void execute(Player player, String[] args)
     {
         try {
-            EconomyDataStore dataStore = EconomyDataStore.getInstance();
+            Economy dataStore = Economy.getInstance();
             if (dataStore == null) {
                 Messages.Errors.LoadFailure().sendTo(player);
                 Messages.Errors.Server.DataStoreNotLoaded().sendToServer();
