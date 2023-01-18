@@ -1,67 +1,65 @@
 package prison.nf.economy;
 
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import prison.nf.economy.commands.commandtypes.PlayerCommand;
-import prison.nf.economy.commands.commandtypes.ServerCommand;
+import prison.nf.commands.Command;
+import prison.nf.commands.Executor;
+import prison.nf.commands.exceptions.CommandExecutionException;
 import prison.nf.economy.commands.server.AccountCommand;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
-public class EcoCommands implements CommandExecutor
+public class EcoCommands extends Executor
 {
-    private static final ArrayList<PlayerCommand> playerCommands = new ArrayList<>();
-    private static final ArrayList<ServerCommand> serverCommands = new ArrayList<>();
+    private final EconomyPlugin plugin;
 
-    public static void register(EconomyPlugin plugin) {
-        // Register Player Commands
-        playerCommands.add(new prison.nf.economy.commands.player.BalanceCommand(plugin));
-        playerCommands.add(new prison.nf.economy.commands.player.SendCommand(plugin));
-        playerCommands.add(new prison.nf.economy.commands.player.AccountCommand(plugin));
-
-        // Register Server Commands
-        serverCommands.add(new prison.nf.economy.commands.server.BalanceCommand(plugin));
-        serverCommands.add(new prison.nf.economy.commands.server.SendCommand(plugin));
-        serverCommands.add(new prison.nf.economy.commands.server.TransferCommand(plugin));
-        serverCommands.add(new AccountCommand(plugin));
-
-        Objects.requireNonNull(plugin.getCommand("eco")).setExecutor(new EcoCommands());
-    }
-
-    @SuppressWarnings("NullableProblems")
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
+    public EcoCommands(EconomyPlugin plugin)
     {
-        if (sender instanceof Player) {
-            return onPlayerCommand((Player)sender, args);
-        }
-
-        return onServerCommand(sender, args);
+        super();
+        this.plugin = plugin;
     }
 
-    public boolean onServerCommand(CommandSender sender, String[] args) {
-        for (ServerCommand sCommand : serverCommands) {
-            if (sCommand.getName().equalsIgnoreCase(args[0])) {
-                sCommand.execute(sender, Arrays.copyOfRange(args, 1, args.length));
-                return true;
-            }
-        }
+    @Override
+    public List<Command<? extends CommandSender>> getCommands()
+    {
+        return new ArrayList<Command<? extends CommandSender>>() {{
+            add(new prison.nf.economy.commands.player.BalanceCommand(plugin));
+            add(new prison.nf.economy.commands.player.SendCommand(plugin));
+            add(new prison.nf.economy.commands.player.AccountCommand(plugin));
 
-        return false;
+            // Register Server Commands
+            add(new prison.nf.economy.commands.server.BalanceCommand(plugin));
+            add(new prison.nf.economy.commands.server.SendCommand(plugin));
+            add(new prison.nf.economy.commands.server.TransferCommand(plugin));
+            add(new prison.nf.economy.commands.server.AccountCommand(plugin));
+        }};
     }
 
-    public boolean onPlayerCommand(Player player, String[] args) {
-        for (PlayerCommand pCommand : playerCommands) {
-            if (pCommand.getName().equalsIgnoreCase(args[0])) {
-                pCommand.execute(player, Arrays.copyOfRange(args, 1, args.length));
-                return true;
-            }
-        }
+    @Override
+    public void onCommandExecutionException(CommandSender sender, CommandExecutionException e, Command<? extends CommandSender> command)
+    {
+        ArrayList<String> messages = new ArrayList<>();
+        messages.add("Error: " + e.getMessage());
+        messages.add("Usage: " + command.getName() + " " + command.getUsage());
 
-        return false;
+        String[] output = new String[messages.size()];
+        messages.toArray(output);
+
+        sender.sendMessage(output);
+    }
+
+    @Override
+    public void onUnknownCommand(CommandSender sender, String label, String input, List<Command<? extends CommandSender>> potentials)
+    {
+        List<String> messages = new ArrayList<>(potentials.stream().map(c -> c.getName() + " " + c.getUsage()).toList());
+        messages.add(0, "Potential Commands: ");
+        messages.add(0, "Unknown command: " + label + " " + input);
+        String[] output = new String[messages.size()];
+        messages.toArray(output);
+        sender.sendMessage(output);
     }
 }

@@ -5,30 +5,41 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import prison.nf.commands.types.ServerCommand;
 import prison.nf.economy.EconomyPlugin;
 import prison.nf.economy.Messages;
-import prison.nf.economy.commands.commandtypes.ServerCommand;
 import prison.nf.economy.exceptions.AccountNotFoundException;
 import prison.nf.economy.Economy;
+import prison.nf.permissions.Permissions;
 
 import java.sql.SQLException;
 import java.util.Arrays;
 
 public class SendCommand extends ServerCommand
 {
+    private final EconomyPlugin plugin;
+
     public SendCommand(EconomyPlugin plugin)
     {
-        super(plugin, "send");
+        super("send");
+        this.plugin = plugin;
+    }
+
+    @Override
+    public String getUsage()
+    {
+        return "<player> <amount> [memo]";
+    }
+
+    @Override
+    public int getRequiredArgumentCount()
+    {
+        return 2;
     }
 
     @Override
     public void execute(CommandSender sender, String[] args)
     {
-        if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: eco send <player-name> <amount> [memo]" + ChatColor.RESET);
-            return;
-        }
-
         double amount;
         try {
             amount = Double.parseDouble(args[1]);
@@ -38,8 +49,8 @@ public class SendCommand extends ServerCommand
         }
 
         String memo = amount < 0
-            ? getPlugin().getConfig().getString("Transactions.DefaultWithdrawMemo", "Administrative withdraw")
-            : getPlugin().getConfig().getString("Transactions.DefaultDepositMemo", "Administrative deposit");
+            ? plugin.getConfig().getString("Transactions.DefaultWithdrawMemo", "Administrative withdraw")
+            : plugin.getConfig().getString("Transactions.DefaultDepositMemo", "Administrative deposit");
         if (args.length > 2) {
             memo = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
         }
@@ -71,8 +82,15 @@ public class SendCommand extends ServerCommand
                 }
             }
 
+            Permissions permissions = Permissions.getInstance();
+            if (permissions == null) {
+                throw new RuntimeException("Permissions not initialized.");
+            }
+
+            String displayName = permissions.getDisplayNameFor(offlinePlayer);
+
             Messages.Transfer.Sent(
-                ChatColor.BLUE + offlinePlayer.getName() + ChatColor.RESET,
+                displayName,
                 Messages.Currency.Formatted(amount)
             ).sendTo(sender);
         } catch (AccountNotFoundException e) {

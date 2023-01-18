@@ -4,13 +4,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import prison.nf.commands.types.ServerCommand;
 import prison.nf.economy.EconomyPlugin;
 import prison.nf.economy.Messages;
-import prison.nf.economy.commands.commandtypes.ServerCommand;
 import prison.nf.economy.exceptions.AccountNotFoundException;
 import prison.nf.economy.Economy;
 import prison.nf.economy.datatypes.Account;
 import prison.nf.economy.datatypes.Transaction;
+import prison.nf.permissions.Permissions;
 
 import javax.annotation.Nullable;
 import java.sql.SQLException;
@@ -18,19 +19,29 @@ import java.util.List;
 
 public class AccountCommand extends ServerCommand
 {
+    private final EconomyPlugin plugin;
+
     public AccountCommand(EconomyPlugin plugin)
     {
-        super(plugin, "account");
+        super("account");
+        this.plugin = plugin;
+    }
+
+    @Override
+    public String getUsage()
+    {
+        return "<player> [limit]";
+    }
+
+    @Override
+    public int getRequiredArgumentCount()
+    {
+        return 1;
     }
 
     @Override
     public void execute(CommandSender sender, String[] args)
     {
-        if (args.length < 1) {
-            sender.sendMessage(ChatColor.RED + "Usage: eco account <player> [limit]" + ChatColor.RESET);
-            return;
-        }
-
         long limit = 5;
         if (args.length > 1) {
             try {
@@ -57,22 +68,29 @@ public class AccountCommand extends ServerCommand
             return;
         }
 
+        Permissions permissions = Permissions.getInstance();
+        if (permissions == null) {
+            throw new RuntimeException("Permissions not initialized.");
+        }
+
+        String displayName = permissions.getDisplayNameFor(player);
+
         try {
             Account account = economy.getAccount(player);
             if (account == null) {
-                Messages.Errors.AccountNotFoundForPlayer(player.getName()).sendTo(sender);
+                Messages.Errors.AccountNotFoundForPlayer(displayName).sendTo(sender);
                 return;
             }
 
             Messages.PlayerBalance(
-                player.getName(),
+                displayName,
                 Messages.Currency.Formatted(account.accountBalance)
             ).sendTo(sender);
             new Messages.Message("").sendTo(sender);
 
             List<Transaction> transactions = economy.getTransactions(player, limit);
 
-            Messages.TransactionList.Header(limit, player.getName()).sendTo(sender);
+            Messages.TransactionList.Header(limit, displayName).sendTo(sender);
 
             if (transactions.size() < 1) {
                 Messages.TransactionList.NoTransactions().sendTo(sender);
@@ -87,9 +105,9 @@ public class AccountCommand extends ServerCommand
                 OfflinePlayer toPlayer = toAccount.getPlayer();
 
                 String fromAccountName = fromPlayer != null
-                    ? fromPlayer.getName()
+                    ? permissions.getDisplayNameFor(fromPlayer)
                     : ChatColor.GOLD + "Administrator" + ChatColor.RESET;
-                String toAccountName = ChatColor.BLUE + toPlayer.getName() + ChatColor.RESET;
+                String toAccountName = permissions.getDisplayNameFor(toPlayer);
 
                 String valueString = Messages.Currency.Formatted(transaction.amount);
                 if (

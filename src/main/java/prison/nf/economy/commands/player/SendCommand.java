@@ -4,34 +4,44 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import prison.nf.commands.types.PlayerCommand;
 import prison.nf.economy.EconomyPlugin;
 import prison.nf.economy.Messages;
-import prison.nf.economy.commands.commandtypes.PlayerCommand;
 import prison.nf.economy.exceptions.AccountNotFoundException;
 import prison.nf.economy.exceptions.InsufficientAccountBalanceException;
 import prison.nf.economy.exceptions.InvalidTransactionAmountException;
 import prison.nf.economy.Economy;
+import prison.nf.permissions.Permissions;
 
 import java.sql.SQLException;
 import java.util.Arrays;
 
 public class SendCommand extends PlayerCommand
 {
+    private final EconomyPlugin plugin;
+
     public SendCommand(EconomyPlugin plugin)
     {
-        super(plugin, "send");
+        super("send");
+        this.plugin = plugin;
+    }
+
+    @Override
+    public String getUsage()
+    {
+        return "<player> <amount> [memo]";
+    }
+
+    @Override
+    public int getRequiredArgumentCount()
+    {
+        return 2;
     }
 
     @Override
     public void execute(Player player, String[] args)
     {
-        if (args.length < 2)
-        {
-            player.sendMessage(ChatColor.RED + "Usage: /eco send <player> <amount> [memo]" + ChatColor.RESET);
-            return;
-        }
-
-        String memo = getPlugin().getConfig().getString("Transactions.DefaultTransferMemo", "General transfer");
+        String memo = plugin.getConfig().getString("Transactions.DefaultTransferMemo", "General transfer");
         if (args.length > 2) {
             memo = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
         }
@@ -66,11 +76,19 @@ public class SendCommand extends PlayerCommand
             return;
         }
 
+        Permissions permissions = Permissions.getInstance();
+        if (permissions == null) {
+            throw new RuntimeException("Permissions not initialized.");
+        }
+
+        String toDisplayName = permissions.getDisplayNameFor(toPlayer);
+        String displayName = permissions.getDisplayNameFor(player);
+
         try {
             economy.transfer(player, toPlayer, amount, memo);
 
             Messages.Transfer.Sent(
-                    ChatColor.BLUE + toPlayer.getName() + ChatColor.RESET,
+                    toDisplayName,
                     Messages.Currency.Formatted(amount)
             ).sendTo(player);
 
@@ -78,7 +96,7 @@ public class SendCommand extends PlayerCommand
                 Player onlineToPlayer = toPlayer.getPlayer();
                 if (onlineToPlayer != null) {
                     Messages.Transfer.Received(
-                        ChatColor.BLUE + player.getName() + ChatColor.RESET,
+                            displayName,
                         Messages.Currency.Formatted(amount)
                     ).sendTo(onlineToPlayer);
                 }
