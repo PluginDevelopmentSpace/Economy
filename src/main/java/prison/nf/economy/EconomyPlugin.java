@@ -5,6 +5,7 @@ import prison.nf.economy.events.PlayerEvents;
 
 import java.io.File;
 import java.util.List;
+import java.util.Objects;
 
 public class EconomyPlugin extends JavaPlugin
 {
@@ -27,7 +28,9 @@ public class EconomyPlugin extends JavaPlugin
         Messages.initialize(this);
 
         // Register Commands
-        EcoCommands.register(this);
+        Objects.requireNonNull(
+            this.getServer().getPluginCommand("eco")
+        ).setExecutor(new EcoCommands(this));
 
         // Register Events
         this.getServer().getPluginManager().registerEvents(new PlayerEvents(), this);

@@ -6,7 +6,7 @@
 
     <groupId>prison.nf.economy</groupId>
     <artifactId>Economy</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>18</maven.compiler.source>
@@ -32,9 +32,25 @@
         <dependency>
             <groupId>prison.nf.storage</groupId>
             <artifactId>Storage</artifactId>
+            <version>1.2</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/lib/Storage-1.2-SNAPSHOT.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>prison.nf.permissions</groupId>
+            <artifactId>Permissions</artifactId>
             <version>1.1</version>
             <scope>system</scope>
-            <systemPath>${pom.basedir}/lib/Storage-1.1-SNAPSHOT.jar</systemPath>
+            <systemPath>${pom.basedir}/lib/Permissions-1.1-SNAPSHOT.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>prison.nf.commands</groupId>
+            <artifactId>Commands</artifactId>
+            <version>1.1</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/lib/Commands-1.1-SNAPSHOT.jar</systemPath>
         </dependency>
     </dependencies>
 </project>
