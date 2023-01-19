@@ -1,5 +1,5 @@
 name: Economy
-version: 1.3
+version: ${project.version}
 author: Nathan Fiscaletti
 api-version: 1.18
 main: prison.nf.economy.EconomyPlugin
