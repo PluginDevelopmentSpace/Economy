@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>prison.nf.economy</groupId>
+    <groupId>prison.nf</groupId>
     <artifactId>Economy</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.3-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>18</maven.compiler.source>
@@ -19,6 +19,10 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <id>prison-plugins</id>
+            <url>https://repo.repsy.io/mvn/nathan-fiscaletti/prison-plugins</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -30,27 +34,32 @@
         </dependency>
 
         <dependency>
-            <groupId>prison.nf.storage</groupId>
+            <groupId>prison.nf</groupId>
             <artifactId>Storage</artifactId>
-            <version>1.2</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/lib/Storage-1.2-SNAPSHOT.jar</systemPath>
+            <version>1.4-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>prison.nf.permissions</groupId>
+            <groupId>prison.nf</groupId>
             <artifactId>Permissions</artifactId>
-            <version>1.1</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/lib/Permissions-1.1-SNAPSHOT.jar</systemPath>
+            <version>1.3-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>prison.nf.commands</groupId>
+            <groupId>prison.nf</groupId>
             <artifactId>Commands</artifactId>
-            <version>1.1</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/lib/Commands-1.1-SNAPSHOT.jar</systemPath>
+            <version>1.3-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
+        
+    <distributionManagement>
+        <repository>
+            <id>prison-plugins</id>
+            <name>Prison Plugins</name>
+            <url>https://repo.repsy.io/mvn/nathan-fiscaletti/prison-plugins</url>
+        </repository>
+    </distributionManagement>
 </project>
