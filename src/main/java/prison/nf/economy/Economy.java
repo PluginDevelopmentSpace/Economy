@@ -133,6 +133,15 @@ public final class Economy extends DataStore<SqlitePooledConnectionSource>
         postTransaction(null, account.id, amount, memo);
     }
 
+    public double getBalance(UUID playerId) throws SQLException, AccountNotFoundException
+    {
+        Account account = getAccount(playerId);
+        if (account == null) {
+            throw new AccountNotFoundException();
+        }
+        return account.accountBalance;
+    }
+
     public void giveMoney(Player toPlayer, double amount, String memo) throws SQLException, AccountNotFoundException
     {
         giveMoney(toPlayer.getUniqueId(), amount, memo);
